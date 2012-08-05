@@ -15,27 +15,16 @@
   (let [{body :body} (client/get (stock-price-url symbol year))]
     {:symbol symbol :close (Float/parseFloat (get (string/split (last (string/split-lines body)) #",") 2))}))
 
-(defn compare-price [current-high]
-  (println current-high))
+(defn compare-price [current-high symbol year]
+  "Send a request for the high price of symbol in year. Then increment the current high."
+  (let [{:keys [close symbol]} (get-stock-data symbol year)]
+    (if (or (empty? current-high) (> close (get current-high :close)))
+      {:symbol symbol :close close}
+      current-high)))
 
-;(defn compare-price [current-high symbol year]
-  ;(println "1: " symbol year)
-  ;"Send a request for the high price of symbol in year. Then increment the current high."
-  ;(let [{:keys [close symbol]} (get-stock-data symbol year)]
-    ;(println "2: " symbol year)
-    ;(if (empty? current-high)
-      ;{:symbol symbol :close close}
-      ;current-high)))
+; Send off the actions to the actor, then wait up to 10 seconds for them to return.
+(map #(send-off highest-price compare-price % year) symbols)
+(await-for 10000 highest-price)
 
-;(send highest-price compare-price)
-
-;(await-for 500 highest-price)
-;(println @highest-price)
-
-(def a (agent 1))
-(send a inc)
-(await a)
-@a
-
-; For the REPL's benefit.
-(shutdown-agents)
+(let [{:keys [close symbol]} @highest-price]
+  (println (format "The highest stock in %d was %s with closing price %f." year symbol close)))
