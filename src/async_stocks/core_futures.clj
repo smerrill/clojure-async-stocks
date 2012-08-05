@@ -1,4 +1,4 @@
-(ns async-stocks.core
+(ns async-stocks.core-futures
   (:require [clj-http.client :as client])
   (:require [clojure.string :as string]))
 
