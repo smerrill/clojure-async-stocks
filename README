@@ -1,13 +1,15 @@
 # async-stocks
 
-FIXME: write description
+Implementing the Scala stock price example in Clojure.
+
+Thus far, the example is naive and blocks on all HTTP requests returning.
 
 ## Usage
 
-FIXME: write
+`lein run`
 
 ## License
 
-Copyright (C) 2012 FIXME
+Copyright (C) 2012 Steven Merrill
 
 Distributed under the Eclipse Public License, the same as Clojure.
